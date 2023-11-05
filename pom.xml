@@ -6,4 +6,12 @@
   <version>1.0-SNAPSHOT</version>
   <name>Archetype - MDBs_HW6</name>
   <url>http://maven.apache.org</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>4.11.0</version>
+    </dependency>
+  </dependencies>
 </project>
