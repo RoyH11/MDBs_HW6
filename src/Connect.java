@@ -1,39 +1,36 @@
-import com.mongodb.*;
-import org.bson.BsonDocument;
-import org.bson.BsonInt64;
-import org.bson.Document;
-import org.bson.conversions.Bson;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoException;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-
+import org.bson.Document;
 
 public class Connect {
     public static void main(String[] args) {
-        // Replace the placeholder with your Atlas connection string
-        String uri = "mongodb+srv://ruoqiuhuang:Hrq%402358558172@cluster0.5e7c2ll.mongodb.net/?retryWrites=true&w=majority";
+        String connectionString = "mongodb+srv://ruoqiuhuang:Hrq%402358558172@cluster0.5e7c2ll.mongodb.net/?retryWrites=true&w=majority";
 
-        // Construct a ServerApi instance using the ServerApi.builder() method
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
 
         MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(uri))
+                .applyConnectionString(new ConnectionString(connectionString))
                 .serverApi(serverApi)
                 .build();
 
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase database = mongoClient.getDatabase("admin");
             try {
                 // Send a ping to confirm a successful connection
-                Bson command = new BsonDocument("ping", new BsonInt64(1));
-                Document commandResult = database.runCommand(command);
-                System.out.println("Successfully connected to Atlas");
+                MongoDatabase database = mongoClient.getDatabase("admin");
+                database.runCommand(new Document("ping", 1));
+                System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
             } catch (MongoException e) {
-                System.err.println(e);
+                e.printStackTrace();
             }
         }
     }
