@@ -79,34 +79,73 @@ public class App {
 
     }
 
-    private static void choice2(MongoCollection<Document> collection, Scanner scanner) {
+    private static void choice2(MongoDatabase database, Scanner scanner) {
+        MongoCollection<Document> businesses = database.getCollection("businesses");
+        MongoCollection<Document> reviews = database.getCollection("reviews");
+
         // review a business
-        // ask for business name, user name, and review text
-        // insert a new review into the reviews array
-        // using the following command in mongo shell:
-        /*
-        db.businesses.updateOne({name: "Pita Pit"}, {$push: {reviews: {user_id: "123", user_name: "John", text: "This is a test review"}}});
-         */
+        // search the business by business_id
+        // if not found, print "No matching documents found."
+        // if found, add a review to the business
+        // review should be an integer from 1 to 5
+        // if not, print "Invalid input"
+        // if valid, add the review to the business
+        // (stars * review_count + new_review_score) /(review_count + 1)
+        // update the review_count
+        // Store the information of the reviewed business in a collection called reviews
+        // if the business is already in the collection, update the review
 
-        // TODO: check this code
-        System.out.println("Enter a business name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter your user id: ");
-        String user_id = scanner.nextLine();
-        System.out.println("Enter your user name: ");
-        String user_name = scanner.nextLine();
-        System.out.println("Enter your review text: ");
-        String text = scanner.nextLine();
-
-        Document review = new Document("user_id", user_id)
-                .append("user_name", user_name)
-                .append("text", text);
-
-        collection.updateOne(eq("name", name), Updates.push("reviews", review));
-
-        System.out.println("Review added successfully");
-
-        //todo: check if review added successfully
+        System.out.println("Enter a business id: ");
+        String business_id = scanner.nextLine();
+        Document doc = businesses.find(eq("business_id", business_id)).first();
+        if(doc!= null){
+            System.out.println(doc.toJson());
+            System.out.println("Enter a review score: ");
+            int new_review_score = scanner.nextInt();
+            if(new_review_score>=1 && new_review_score<=5){
+                // update review count
+                int review_count = doc.getInteger("review_count");
+                review_count++;
+                // update stars
+                // try getting a double, if not, get an integer
+                // then cast to double
+                double stars;
+                try {
+                    stars = doc.getDouble("stars");
+                }catch (Exception e){
+                    int stars_int = doc.getInteger("stars");
+                    stars = (double) stars_int;
+                }
+                double new_stars = (stars * (review_count-1) + new_review_score) /(review_count);
+                // update the business
+                businesses.updateOne(
+                        Filters.eq("business_id", business_id),
+                        Updates.combine(
+                                Updates.set("stars", new_stars),
+                                Updates.inc("review_count", 1)
+                        )
+                );
+                // update reviews
+                Document reviewed_business = businesses.find(eq("business_id", business_id)).first(); //get the reviewed business
+                Document review = reviews.find(eq("business_id", business_id)).first();
+                if (review != null){
+                    reviews.updateOne(
+                            Filters.eq("business_id", business_id),
+                            Updates.combine(
+                                    Updates.set("stars", new_stars),
+                                    Updates.inc("review_count", 1)
+                            )
+                    );
+                }else {
+                    assert reviewed_business != null;
+                    reviews.insertOne(reviewed_business);
+                }
+            }else {
+                System.out.println("Invalid input");
+            }
+        }else {
+            System.out.println("No matching business found");
+        }
     }
 
     public static void main( String[] args ) {
@@ -136,7 +175,7 @@ public class App {
                         choice1(collection, scanner);
                         break;
                     case 2:
-                        choice2(collection, scanner);
+                        choice2(database, scanner);
                         break;
                     case 3:
                         loop = false;
@@ -145,24 +184,6 @@ public class App {
                         System.out.println("Invalid input");
                         break;
                 }
-
-                /*
-                // test code below
-                System.out.println("Enter a business name: ");
-                String name = scanner.nextLine();
-                if (name.isEmpty()) {
-                    loop = false;
-                }
-
-
-
-                Document doc = collection.find(eq("name", name)).first();
-                if (doc != null) {
-                    System.out.println(doc.toJson());
-                } else {
-                    System.out.println("No matching documents found.");
-                }
-                */
             }
         }
     }
