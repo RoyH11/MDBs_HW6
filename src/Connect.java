@@ -1,4 +1,7 @@
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
@@ -8,9 +11,15 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.slf4j.LoggerFactory;
 
 public class Connect {
     public static void main(String[] args) {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory ();
+        Logger rootLogger = loggerContext.getLogger ("org.mongodb.driver");
+        rootLogger.setLevel (Level.OFF);
+
+
         String connectionString = "mongodb+srv://ruoqiuhuang:Hrq%402358558172@cluster0.5e7c2ll.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
