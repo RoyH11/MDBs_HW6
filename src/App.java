@@ -154,7 +154,7 @@ public class App {
         rootLogger.setLevel (Level.OFF);
 
         // Replace the placeholder with your MongoDB deployment's connection string
-        String uri = "mongodb+srv://ruoqiuhuang:Hrq%402358558172@cluster0.5e7c2ll.mongodb.net/?retryWrites=true&w=majority";
+        String uri = "mongodb+srv://ruoqiuhuang:RoyAtlashw6@cluster0.5e7c2ll.mongodb.net/?retryWrites=true&w=majority";
 
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("hw6");

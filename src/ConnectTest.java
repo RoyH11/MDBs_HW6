@@ -20,7 +20,7 @@ public class ConnectTest {
         rootLogger.setLevel (Level.OFF);
 
 
-        String connectionString = "mongodb+srv://ruoqiuhuang:Hrq%402358558172@cluster0.5e7c2ll.mongodb.net/?retryWrites=true&w=majority";
+        String connectionString = "mongodb+srv://ruoqiuhuang:RoyAtlashw6@cluster0.5e7c2ll.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
