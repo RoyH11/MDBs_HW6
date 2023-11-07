@@ -13,7 +13,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
 
-public class Connect {
+public class ConnectTest {
     public static void main(String[] args) {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory ();
         Logger rootLogger = loggerContext.getLogger ("org.mongodb.driver");
